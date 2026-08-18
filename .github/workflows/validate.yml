@@ -1,0 +1,26 @@
+name: Validate API
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm run check
+      - run: |
+          python - <<'PY'
+          import zipfile
+          p="public/bypass/HASADVIP1/new.zip"
+          with zipfile.ZipFile(p) as z:
+              bad=z.testzip()
+              if bad:
+                  raise SystemExit(f"Corrupt ZIP member: {bad}")
+              print("new.zip OK:", z.namelist())
+          PY
