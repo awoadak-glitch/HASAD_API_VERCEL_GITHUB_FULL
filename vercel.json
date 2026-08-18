@@ -5,8 +5,20 @@
       "destination": "/api/connect"
     },
     {
+      "source": "/verify.php",
+      "destination": "/api/verify"
+    },
+    {
       "source": "/bypass/HASADVIP1/Hasad.json",
-      "destination": "/api/config"
+      "destination": "/api/v10-config"
+    },
+    {
+      "source": "/bypass/furybbox1.json",
+      "destination": "/api/v2-config"
+    },
+    {
+      "source": "/bypass/FAHAD.json",
+      "destination": "/api/v2-runtime"
     }
   ],
   "headers": [
@@ -20,7 +32,34 @@
       ]
     },
     {
+      "source": "/verify.php",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
       "source": "/bypass/HASADVIP1/Hasad.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/bypass/furybbox1.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/bypass/FAHAD.json",
       "headers": [
         {
           "key": "Cache-Control",

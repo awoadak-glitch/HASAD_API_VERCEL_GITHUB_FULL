@@ -1,75 +1,132 @@
-# HASAD API — Vercel + GitHub
+# HASAD Server — V10 + IRAQ-BX V2
 
-مشروع جاهز لـ GitHub ثم Vercel، مع الحفاظ على مسارات التوافق القديمة الخاصة بتسجيل الدخول والإعدادات.
+هذا تحديث للمستودع الحالي بحيث يدعم عقد تسجيل الدخول القديم V10 وعقد IRAQ-BX V2 في نفس `/connect`.
 
-## المسارات
+## مهم قبل الرفع
+
+المجلد:
+`public/bypass/HASADVIP1/`
+
+يحتوي فقط ملف:
+`KEEP_EXISTING_NEW_ZIP.txt`
+
+التحديث **لا يحتوي new.zip** حتى لا يستبدل الملف الموجود عندك حاليًا.
+اترك ملفك الحالي:
+`public/bypass/HASADVIP1/new.zip`
+كما هو.
+
+## المسارات بعد النشر
 
 - `POST /connect`
+- `POST /verify.php`
 - `GET /bypass/HASADVIP1/Hasad.json`
-- `GET /bypass/HASADVIP1/new.zip`
+- `GET /bypass/HASADVIP1/new.zip`  ← ملفك الحالي
+- `GET /bypass/furybbox1.json`
+- `GET /bypass/furybbox1.zip`       ← ZIP اختبار آمن مرفق
+- `GET /bypass/FAHAD.json`          ← placeholder آمن
 - `GET /api/health`
 
-## تسجيل الدخول
+## /connect
 
-يرسل العميل:
+### V10
 
+يرسل:
 `game=PUBG&user_key=...&serial=...&verrr=1.0.0`
 
-وعند النجاح يرجع:
+التوكن:
+`MD5("PUBG-" + key + "-" + serial + "-" + V10_TOKEN_SALT)`
+
+### V2
+
+يرسل:
+`game=VIP&user_key=...&serial=...`
+
+لا يحتاج `verrr`.
+
+التوكن:
+`MD5("VIP-" + key + "-" + serial + "-" + V2_TOKEN_SALT)`
+
+## Environment Variables في Vercel
+
+انسخ:
+
+```env
+USERS_JSON={"AWR-2026":{"enabled":true,"exp":"2026-12-31 23:59:59","serial":"*","games":["PUBG","VIP"]}}
+V10_APP_VERSION=1.0.0
+V10_TOKEN_SALT=Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E
+V10_RESOURCE_VERSION=5
+V2_TOKEN_SALT=ABUFAHADTOP
+V2_RESOURCE_VERSION=5
+V2_APP_VERSION=4.5
+V2_UPDATE_URL=
+VERIFY_LICENSE_KEY=FAHAD41
+VERIFY_PACKAGE=pubgm.loader
+VERIFY_SIGNATURE_MD5=*
+```
+
+### توقيع V2
+
+`VERIFY_SIGNATURE_MD5=*` مخصص لمرحلة الاختبار فقط.
+
+بعد تعديل وتوقيع APK النهائي احسب MD5 للتوقيع الذي يرسله التطبيق ثم ضع القيمة الدقيقة بدل `*` للحصول على تحقق صارم.
+
+## furybbox1.json
+
+يرجع افتراضيًا:
 
 ```json
 {
-  "status": true,
-  "data": {
-    "token": "...",
-    "EXP": "2026-12-31 23:59:59",
-    "rng": 1234567890
-  }
+  "bypassVersion": 5,
+  "version": "4.5",
+  "url": ""
 }
 ```
 
-## إعداد Vercel
+القيمة `bypassVersion` رقم وليست نصًا.
 
-أضف Environment Variables:
+## furybbox1.zip
 
-- `TOKEN_SALT`
-- `APP_VERSION`
-- `USERS_JSON`
-- `RESOURCE_VERSION`
+المرفق حاليًا ZIP آمن للاختبار يحتوي `README.txt` فقط.
+يمكن استخدام هذا المسار لاختبار أن التنزيل وفك الضغط يعملان مع موارد تطبيق عادية غير تنفيذية.
 
-مثال `USERS_JSON`:
+## FAHAD.json
+
+يرجع:
 
 ```json
-{"AWR-2026":{"enabled":true,"exp":"2026-12-31 23:59:59","serial":"*"}}
+{"bypasspassword":""}
 ```
 
-`serial="*"` يسمح بأي جهاز. ضع serial محددًا لتقييد المفتاح بجهاز واحد.
+هذه قيمة placeholder فقط لأن القيمة الفعلية تُمرر في التطبيق إلى مسار Runtime/Exec.
 
-## الربط مع GitHub
+## الرفع إلى GitHub
 
-1. أنشئ مستودعًا جديدًا على GitHub.
-2. ارفع جميع محتويات هذا المجلد إلى الفرع `main`.
-3. في Vercel اختر **Add New Project** ثم **Import Git Repository**.
-4. اختر المستودع.
-5. أضف Environment Variables السابقة.
-6. اضغط Deploy.
-7. بعد الربط، كل Push جديد إلى GitHub يؤدي إلى Deployment جديد تلقائيًا.
+انسخ/ارفع محتويات ZIP إلى جذر المستودع الحالي مع الاستبدال عند التعارض:
+- api/
+- scripts/
+- .github/
+- package.json
+- vercel.json
+- .env.example
+- .gitignore
+- README.md
+- public/bypass/furybbox1.zip
 
-## اختبار الروابط بعد النشر
+لا تحذف:
+`public/bypass/HASADVIP1/new.zip`
 
-لو كان عنوان المشروع:
+بعد Commit إلى `main` سيعمل Vercel Deployment جديد تلقائيًا.
 
-`https://YOUR-PROJECT.vercel.app`
+## اختبار بعد النشر
 
-فستكون الروابط:
+من PowerShell:
 
-- `https://YOUR-PROJECT.vercel.app/connect`
-- `https://YOUR-PROJECT.vercel.app/bypass/HASADVIP1/Hasad.json`
-- `https://YOUR-PROJECT.vercel.app/bypass/HASADVIP1/new.zip`
-- `https://YOUR-PROJECT.vercel.app/api/health`
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\test-server.ps1
+```
 
-## new.zip
+أو:
 
-المرفق داخل هذا المشروع هو **ZIP تجريبي آمن** يحتوي `README.txt` فقط، حتى يمكن اختبار دورة التنزيل كاملة.
-
-لا تضع الأسرار مثل مفاتيح GitHub/Vercel داخل المستودع. استخدم Environment Variables في Vercel.
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\test-server.ps1 -Base "https://YOUR-DOMAIN.vercel.app"
+```
