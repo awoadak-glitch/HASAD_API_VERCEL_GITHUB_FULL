@@ -1,0 +1,32 @@
+{
+  "rewrites": [
+    {
+      "source": "/connect",
+      "destination": "/api/connect"
+    },
+    {
+      "source": "/bypass/HASADVIP1/Hasad.json",
+      "destination": "/api/config"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/connect",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/bypass/HASADVIP1/Hasad.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    }
+  ]
+}
